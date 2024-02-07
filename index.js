@@ -56,20 +56,18 @@ let topTarantinoMovies = [
 
 // setup the logger
 app.use(morgan("combined", { stream: accessLogStream }));
-app.use(express.static("public"));
 
 // GET requests
 app.get("/", (req, res) => {
   res.send("Welcome to Tarantino Movies!");
 });
 
-app.get("/documentation", (req, res) => {
-  res.sendFile("public/documentation.html", { root: __dirname });
-});
-
 app.get("/movies", (req, res) => {
   res.json(topTarantinoMovies);
 });
+
+//Static file
+app.use('/documentation', express.static('public', {index: 'documentation.html'}));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
