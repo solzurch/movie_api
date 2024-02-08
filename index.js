@@ -11,6 +11,12 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
   flags: "a",
 });
 
+// setup the logger
+app.use(morgan("combined", { stream: accessLogStream }));
+
+// Middleware for serving static files
+app.use(express.static('public'));
+
 let topTarantinoMovies = [
   {
     title: "Reservoir Dogs (1992)",
@@ -54,9 +60,6 @@ let topTarantinoMovies = [
   },
 ];
 
-// setup the logger
-app.use(morgan("combined", { stream: accessLogStream }));
-
 // GET requests
 app.get("/", (req, res) => {
   res.send("Welcome to Tarantino Movies!");
@@ -65,9 +68,6 @@ app.get("/", (req, res) => {
 app.get("/movies", (req, res) => {
   res.json(topTarantinoMovies);
 });
-
-//Static file
-app.use('/documentation', express.static('public', {index: 'documentation.html'}));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
