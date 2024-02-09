@@ -15,48 +15,78 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
 app.use(morgan("combined", { stream: accessLogStream }));
 
 // Middleware for serving static files
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 let topTarantinoMovies = [
   {
-    title: "Reservoir Dogs (1992)",
-    author: "Quentin Tarantino",
+    id: 1,
+    title: "Reservoir Dogs",
+    director: "Quentin Tarantino",
+    releaseYear: "1992",
+    genres: { Crime, Thriller },
   },
   {
-    title: "Pulp Fiction (1995)",
-    author: "Quentin Tarantino",
+    id: 2,
+    title: "Pulp Fiction",
+    director: "Quentin Tarantino",
+    releaseYear: "1995",
+    genres: { Crime, Drama, Thriller },
   },
   {
-    title: "Jackie Brown (1997)",
-    author: "Stephanie Meyer",
+    id: 3,
+    title: "Jackie Brown",
+    director: "Quentin Tarantino",
+    releaseYear: "1997",
+    genres: { Crime, Drama, Thriller },
   },
   {
-    title: "Kill Bill Vol.I (2003)",
-    author: "Quentin Tarantino",
+    id: 4,
+    title: "Kill Bill Vol.I",
+    director: "Quentin Tarantino",
+    releaseYear: "2003",
+    genres: { Action },
   },
   {
-    title: "Kill Bill Vol.II (2004)",
-    author: "Quentin Tarantino",
+    id: 5,
+    title: "Kill Bill Vol.II",
+    director: "Quentin Tarantino",
+    releaseYear: "2004",
+    genres: { Action, Drama },
   },
   {
-    title: "Death Proof (2007)",
-    author: "Quentin Tarantino",
+    id: 6,
+    title: "Death Proof",
+    director: "Quentin Tarantino",
+    releaseYear: "2007",
+    genres: { Horror, Action },
   },
   {
-    title: "Inglourious Bastards (2009)",
-    author: "Quentin Tarantino",
+    id: 7,
+    title: "Inglourious Bastards",
+    director: "Quentin Tarantino",
+    releaseYear: "2009",
+    genres: { War, Action, Thriller },
   },
   {
-    title: "Django Unchained (2012))",
-    author: "Quentin Tarantino",
+    id: 8,
+    title: "Django Unchained",
+    director: "Quentin Tarantino",
+    releaseYear: "2012",
+    genres: { Western, Action, Thriller },
   },
   {
-    title: "The Hateful Eight (2015))",
-    author: "Quentin Tarantino",
+    id: 9,
+    title: "The Hateful Eight",
+    director: "Quentin Tarantino",
+    releaseYear: "2015",
+    genres: { Western, Thriller },
   },
   {
-    title: "Once Upon a Time in Hollywood (2019))",
-    author: "Quentin Tarantino",
+    id: 10,
+    title: "Once Upon a Time in Hollywood",
+    director: "Quentin Tarantino",
+    releaseYear: "2019",
+    genres: { Drama, Thriller },
   },
 ];
 
