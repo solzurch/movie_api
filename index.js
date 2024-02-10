@@ -1,144 +1,198 @@
 const express = require("express");
-(morgan = require("morgan")),
-  (fs = require("fs")), // import built in node modules fs and path
-  (path = require("path"));
+app = express();
+bodyParser = require("body-parser");
+uuid = require("uuid");
 
-const app = express();
+app.use(bodyParser.json);
 
-// create a write stream (in append mode)
-// a ‘log.txt’ file is created in root directory
-const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
-  flags: "a",
-});
-
-// setup the logger
-app.use(morgan("combined", { stream: accessLogStream }));
-
-// Middleware for serving static files
-app.use(express.static("public"));
-
-let topTarantinoMovies = [
+let users = [
   {
     id: 1,
-    title: "Reservoir Dogs",
-    director: "Quentin Tarantino",
-    releaseYear: "1992",
-    genres: "Crime, Thriller",
+    name: "Kim",
+    favoritesMovies: [],
   },
   {
     id: 2,
-    title: "Pulp Fiction",
-    director: "Quentin Tarantino",
-    releaseYear: "1995",
-    genres: "Crime, Drama, Thriller",
-  },
-  {
-    id: 3,
-    title: "Jackie Brown",
-    director: "Quentin Tarantino",
-    releaseYear: "1997",
-    genres: "Crime, Drama, Thriller",
-  },
-  {
-    id: 4,
-    title: "Kill Bill Vol.I",
-    director: "Quentin Tarantino",
-    releaseYear: "2003",
-    genres: "Action",
-  },
-  {
-    id: 5,
-    title: "Kill Bill Vol.II",
-    director: "Quentin Tarantino",
-    releaseYear: "2004",
-    genres: "Action, Drama",
-  },
-  {
-    id: 6,
-    title: "Death Proof",
-    director: "Quentin Tarantino",
-    releaseYear: "2007",
-    genres: "Horror, Action",
-  },
-  {
-    id: 7,
-    title: "Inglourious Bastards",
-    director: "Quentin Tarantino",
-    releaseYear: "2009",
-    genres: "War, Action, Thriller",
-  },
-  {
-    id: 8,
-    title: "Django Unchained",
-    director: "Quentin Tarantino",
-    releaseYear: "2012",
-    genres: "Western, Action, Thriller",
-  },
-  {
-    id: 9,
-    title: "The Hateful Eight",
-    director: "Quentin Tarantino",
-    releaseYear: "2015",
-    genres: "Western, Thriller",
-  },
-  {
-    id: 10,
-    title: "Once Upon a Time in Hollywood",
-    director: "Quentin Tarantino",
-    releaseYear: "2019",
-    genres: "Drama, Thriller",
+    name: "Joe",
+    favoritesMovies: ["Reservoir Dogs"],
   },
 ];
 
-// GET requests
-app.get("/", (req, res) => {
-  res.send("Welcome to Tarantino Movies!");
+let movies = [
+  {
+    Title: "Reservoir Dogs",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "1992",
+    Genres: "Crime, Thriller",
+  },
+  {
+    Title: "Pulp Fiction",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "1995",
+    Genres: "Crime, Drama, Thriller",
+  },
+  {
+    Title: "Jackie Brown",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "1997",
+    Genres: "Crime, Drama, Thriller",
+  },
+  {
+    Title: "Kill Bill Vol.I",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "2003",
+    Genres: "Action",
+  },
+  {
+    Title: "Kill Bill Vol.II",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "2004",
+    Genres: "Action, Drama",
+  },
+  {
+    Title: "Death Proof",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "2007",
+    Genres: "Horror, Action",
+  },
+  {
+    Title: "Inglourious Bastards",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "2009",
+    Genres: "War, Action, Thriller",
+  },
+  {
+    Title: "Django Unchained",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "2012",
+    Genres: "Western, Action, Thriller",
+  },
+  {
+    Title: "The Hateful Eight",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "2015",
+    Genres: "Western, Thriller",
+  },
+  {
+    Title: "Once Upon a Time in Hollywood",
+    Director: "Quentin Tarantino",
+    ReleaseYear: "2019",
+    Genres: "Drama, Thriller",
+  },
+];
+
+// CREATE
+app.post("/users", (req, res) => {
+  const newUser = req.body;
+
+  if (newUser.name) {
+    newUser.id = uuid.v4();
+    users.push(newUser);
+    res.status(201).json(newUser);
+  } else {
+    res.status(400).send("users need names");
+  }
 });
 
-// Gets the list of data about ALL movies
+// UPDATE
+app.put("/users/:id", (req, res) => {
+  const { id } = req.params;
+  const updatedUser = req.body;
+
+  let user = users.find((user) => user.id == id);
+
+  if (user) {
+    user.name = updatedUser.name;
+    res.status(200).json(user);
+  } else {
+    res.ststus(400).send("no such user");
+  }
+});
+
+// CREATE
+app.post("/users/:id/:movieTitle", (req, res) => {
+  const { id, movieTitle } = req.params;
+
+  let user = users.find((user) => user.id == id);
+
+  if (user) {
+    user.favoritesMovies.push(movieTitle);
+    res.status(200).send("${movieTitle} has been added to user $(id)`s array");
+  } else {
+    res.ststus(400).send("no such user");
+  }
+});
+
+// DELETE
+app.delete("/users/:id/:movieTitle", (req, res) => {
+  const { id, movieTitle } = req.params;
+
+  let user = users.find( user => user.id == id);
+
+  if (user) {
+    user.favoritesMovies = user.favoritesMovies.filter(
+      (title) => title !== movieTitle
+    );
+    res
+      .status(200)
+      .send("${movieTitle} has been removed from user $(id)`s array");
+  } else {
+    res.ststus(400).send("no such user");
+  }
+});
+
+// DELETE
+app.delete("/users/:id", (req, res) => {
+  const { id } = req.params;
+
+  let user = users.find( user => user.id == id);
+
+  if (user) {
+    users = users.filter( user => user.id != id);
+    res.status(200).send(`user $(id) has been deleted`);;
+  } else {
+    res.ststus(400).send("no such user");
+  }
+});
+
+// READ  Gets the list of data about ALL movies
 app.get("/movies", (req, res) => {
-  res.json(topTarantinoMovies);
-  res.status(200).send("movies array");
+  res.status(200).json(movies);
 });
 
-// Gets the data about a single movie, by title
+// READ  Gets the data about a single movie, by title
 app.get("/movies/:title", (req, res) => {
-  read.json(
-    movies.find((movie) => {
-      return movie.title === req.params.title;
-    })
-  );
-});
+  const { title } = req.params;
+  const movie = movies.find((movie) => movie.Title === title);
 
-// Gets the data about a single movie, by id
-app.get("/movies/id/:id", (req, res) => {
-  read.json(
-    movies.filter((movie) => {
-      return movie.id === req.params.id;
-    })
-  );
-});
+  if (movie) {
+    res.status(200).json(movie);
+  } else {
+    res.status(400).send("no such movie");
+  }
+}),
+  // READ  Gets the data about a single movie, by genre
+  app.get("/movies/genres/:genre", (req, res) => {
+    const { genres } = req.params;
+    const genre = movies.find((movie) => movie.Genre === genre).Genre;
 
-// Gets the data about a single movie, by genre
-app.get("/movies/genres/:genre", (req, res) => {
-  read.json(
-    movies.filter((movie) => {
-      return movie.genre === req.params.genre;
-    })
-  );
-});
-
-// Gets the data about a single movie, by release year
-app.get("/movies/releaseYear/:releaseYear", (req, res) => {
-  read.json(
-    movies.filter((movie) => {
-      return movie.releaseYear === req.params.releaseYear;
-    })
-  );
-});
+    if (genre) {
+      res.status(200).json(genre);
+    } else {
+      res.status(400).send("no such genre");
+    }
+  }),
+  // Gets the data about a single movie, by release year
+  app.get("/movies/releaseYear/:releaseYear", (req, res) => {
+    read.json(
+      movies.filter((movie) => {
+        return movie.releaseYear === req.params.releaseYear;
+      })
+    );
+  });
 
 app.get("/documentation", (req, res) => {
-  res.sendFile("public/documentation.html", { root:__dirname});
+  res.sendFile("public/documentation.html", { root: __dirname });
 });
 
 app.use((err, req, res, next) => {
