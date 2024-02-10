@@ -1,16 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Api</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
 </head>
 <body>
-    <h1>Movie Api</h1>
-    <h3>Objective:</h3>
-    <p>To build the server-side component of a “movies” web application. The web
-        application will provide users with access to information about different
-        movies, directors, and genres. Users will be able to sign up, update their
-        personal information, and create a list of their favorite movies.</p>
+
+  <h2>MOVIE API</h2>
+
+  <table>
+    <tr>
+      <th>Request</th>
+      <th>URL</th>
+      <th>Response</th>
+    </tr>
+
+    <!-- CREATE User -->
+    <tr>
+      <td>POST</td>
+      <td>/users</td>
+      <td>
+        <pre>
+          <code>
+            {
+              "name": "User Name"
+            }
+          </code>
+        </pre>
+        <pre>
+          <code>
+            {
+              "id": "generated_uuid",
+              "name": "User Name",
+              "favoritesMovies": []
+            }
+          </code>
+        </pre>
+      </td>
+    </tr>
+
+    <!-- UPDATE User -->
+    <tr>
+      <td>PUT</td>
+      <td>/users/:id</td>
+      <td>
+        <pre>
+          <code>
+            {
+              "name": "Updated User Name"
+            }
+          </code>
+        </pre>
+        <pre>
+          <code>
+            {
+              "id": "user_id",
+              "name": "Updated User Name",
+              "favoritesMovies": []
+            }
+          </code>
+        </pre>
+      </td>
+    </tr>
+
+    <!-- ADD Movie to User's Favorites -->
+    <tr>
+      <td>POST</td>
+      <td>/users/:id/:movieTitle</td>
+      <td>
+        <pre>
+          <code>
+            {}
+          </code>
+        </pre>
+        <pre>
+          <code>
+            "${movieTitle} has been added to user {id}'s array"
+          </code>
+        </pre>
+      </td>
+    </tr>
+
+    <!-- DELETE Movie from User's Favorites -->
+    <tr>
+      <td>DELETE</td>
+      <td>/users/:id/:movieTitle</td>
+      <td>
+        <pre>
+          <code>
+            {}
+          </code>
+        </pre>
+        <pre>
+          <code>
+            "${movieTitle} has been removed from user {id}'s array"
+          </code>
+        </pre>
+      </td>
+    </tr>
+
+    <!-- DELETE User -->
+    <tr>
+      <td>DELETE</td>
+      <td>/users/:id</td>
+      <td>
+        <pre>
+          <code>
+            {}
+          </code>
+        </pre>
+        <pre>
+          <code>
+            "User {id} has been deleted"
+          </code>
+        </pre>
+      </td>
+    </tr>
+
+    <!-- READ ALL Movies -->
+    <tr>
+      <td>GET</td>
+      <td>/movies</td>
+      <td>
+        <pre>
+          <code>
+            {}
+          </code>
+        </pre>
+        <pre>
+          <code>
+            [
+              {
+                "Title": "Movie Title",
+                "Director": "Movie Director",
+                "ReleaseYear": "YYYY",
+                "Genres": "Genre1, Genre2"
+              },
+              // ... other movies
+            ]
+          </code>
+        </pre>
+      </td>
+    </tr>
+
+    <!-- READ Single Movie by Title -->
+    <tr>
+      <td>GET</td>
+      <td>/movies/:title</td>
+      <td>
+        <pre>
+          <code>
+            {}
+          </code>
+        </pre>
+        <pre>
+          <code>
+            {
+              "Title": "Movie Title",
+              "Director": "Movie Director",
+              "ReleaseYear": "YYYY",
+              "Genres": "Genre1, Genre2"
+            }
+          </code>
+        </pre>
+      </td>
+    </tr>
+
+    <!-- READ Movies by Genre -->
+    <tr>
+      <td>GET</td>
+      <td>/movies/genres/:genre</td>
+      <td>
+        <pre>
+          <code>
+            {}
+          </code>
+        </pre>
+        <pre>
+          <code>
+            [
+              {
+                "Title": "Movie Title",
+                "Director": "Movie Director",
+                "ReleaseYear": "YYYY",
+                "Genres": "Genre1, Genre2"
+              },
+              // ... other movies with the specified genre
+            ]
+          </code>
+        </pre>
+      </td>
+    </tr>
+
+    <!-- READ Movies by Release Year -->
+    <tr>
+      <td>GET</td>
+      <td>/movies/releaseYear/:releaseYear</td>
+      <td>
+        <pre>
+          <code>
+            {}
+          </code>
+        </pre>
+        <pre>
+          <code>
+            [
+              {
+                "Title": "Movie Title",
+                "Director": "Movie Director",
+                "ReleaseYear": "YYYY",
+                "Genres": "Genre1, Genre2"
+              },
+              // ... other movies released in the specified year
+            ]
+          </code>
+        </pre>
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>
