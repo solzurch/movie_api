@@ -1,23 +1,36 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const uuid = require("uuid");
-const fs = require('fs');
-const path = require('path');
-const morgan = require('morgan');
+const fs = require("fs");
+const path = require("path");
+const morgan = require("morgan");
+
+const mongoose = require("mongoose");
+const Models = require("./models.js");
+
+const Movies = Models.Movie;
+const Users = Models.User;
+
+mongoose.connect("mongodb://localhost:27017/myFlixDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const app = express();
 
 app.use(bodyParser.json()); // Fixed: Added parentheses
 
 // set up static file serving
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // create a write stream (in append mode)
 // a ‘log.txt’ file is created in root directory
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' })
+const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
+  flags: "a",
+});
 
 // setup the logger
-app.use(morgan('combined', { stream: accessLogStream }));
+app.use(morgan("combined", { stream: accessLogStream }));
 
 let users = [
   {
@@ -131,9 +144,7 @@ app.post("/users/:id/:movieTitle", (req, res) => {
 
   if (user) {
     user.favoritesMovies.push(movieTitle);
-    res
-      .status(200)
-      .send(`${movieTitle} has been added to user ${id}'s array`); // Fixed: Corrected string interpolation
+    res.status(200).send(`${movieTitle} has been added to user ${id}'s array`); // Fixed: Corrected string interpolation
   } else {
     res.status(400).send("no such user");
   }
@@ -191,7 +202,7 @@ app.get("/movies/:title", (req, res) => {
 // READ  Gets the data about a single movie, by genre
 app.get("/movies/genres/:genre", (req, res) => {
   const { genre } = req.params;
-  const filteredMovies = movies.filter(movie => movie.Genres.includes(genre));
+  const filteredMovies = movies.filter((movie) => movie.Genres.includes(genre));
 
   if (filteredMovies.length > 0) {
     res.status(200).json(filteredMovies);
@@ -203,7 +214,9 @@ app.get("/movies/genres/:genre", (req, res) => {
 // Gets the data about a single movie, by release year
 app.get("/movies/releaseYear/:releaseYear", (req, res) => {
   const { releaseYear } = req.params;
-  const filteredMovies = movies.filter(movie => movie.ReleaseYear === releaseYear);
+  const filteredMovies = movies.filter(
+    (movie) => movie.ReleaseYear === releaseYear
+  );
 
   if (filteredMovies.length > 0) {
     res.status(200).json(filteredMovies);
