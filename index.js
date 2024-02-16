@@ -188,7 +188,7 @@ app.get("/movies/:title", async (req, res) => {
 });
 
 // READ  Gets the data about a single movie, by genre
-app.get("/movies/genre/:genre", async (req, res) => {nodemon
+app.get("/movies/genre/:genre", async (req, res) => {
   await Movies.findOne({ Genre: req.params.genre })
     .then((movie) => {
       res.json(movie);
