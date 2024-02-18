@@ -30,6 +30,10 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
 // setup the logger
 app.use(morgan("combined", { stream: accessLogStream }));
 
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
+
 
 // CREATE
 app.post("/users", async (req, res) => {
