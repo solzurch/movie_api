@@ -201,12 +201,12 @@ app.get("/movies/genre/:genre", async (req, res) => {
 
 // Gets the data about a single movie, by director
 app.get("/movies/director/:directorName", async (req, res) => {
-  await Directors.findOne({ Name: req.params.directorName })
-    .then((directors) => {
-      if (!directors) {
+  await Movies.findOne({ directorName: req.params.directorName })
+    .then((movie) => {
+      if (!movie) {
         res.status(400).send(req.params.directorName + " was not found.");
       } else {
-        res.json(directors);
+        res.json(movie);
       }
     })
     .catch((err) => {
