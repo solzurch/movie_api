@@ -231,7 +231,7 @@ app.get(
   "/movies/genre/:genre",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    await Movies.findOne({ Genre: req.params.genre })
+    await Movies.findOne({ 'Genre.Name': req.params.genre })
       .then((movie) => {
         res.json(movie);
       })
@@ -247,7 +247,7 @@ app.get(
   "/movies/director/:directorName",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    await Movies.findOne({ directorName: req.params.directorName })
+    await Movies.findOne({ 'Director.Name': req.params.directorName })
       .then((movie) => {
         if (!movie) {
           res.status(400).send(req.params.directorName + " was not found.");
