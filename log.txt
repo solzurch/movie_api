@@ -161,3 +161,7 @@ Timestamp: Thu Feb 01 2024 13:16:45 GMT+0100 (GMT+01:00)
 ::1 - - [18/Feb/2024:14:29:27 +0000] "POST /users?Username=Sol&Password=Lameiro HTTP/1.1" 400 17 "-" "PostmanRuntime/7.36.3"
 ::1 - - [18/Feb/2024:14:30:38 +0000] "GET /movies HTTP/1.1" 401 - "-" "PostmanRuntime/7.36.3"
 ::1 - - [18/Feb/2024:14:31:05 +0000] "GET /movies HTTP/1.1" 401 - "-" "PostmanRuntime/7.36.3"
+::1 - - [18/Feb/2024:20:28:56 +0000] "GET /movies HTTP/1.1" 401 - "-" "PostmanRuntime/7.36.3"
+::1 - - [18/Feb/2024:20:30:40 +0000] "POST /users HTTP/1.1" 201 165 "-" "PostmanRuntime/7.36.3"
+::1 - - [18/Feb/2024:20:32:57 +0000] "POST /login?Username=Sol2&Password=Lameiro2 HTTP/1.1" 200 549 "-" "PostmanRuntime/7.36.3"
+::1 - - [18/Feb/2024:20:35:04 +0000] "GET /movies HTTP/1.1" 201 5180 "-" "PostmanRuntime/7.36.3"
