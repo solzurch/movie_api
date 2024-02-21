@@ -30,35 +30,38 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
 // setup the logger
 app.use(morgan("combined", { stream: accessLogStream }));
 
+const cors = require('cors');
+app.use(cors());
+
 let auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
 
 // CREATE
-app.post("/users", async (req, res) => {
-  await Users.findOne({ Username: req.body.Username })
+app.post('/users', async (req, res) => {
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  await Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
     .then((user) => {
       if (user) {
-        return res.status(400).send(req.body.Username + "already exists");
+        return res.status(400).send(req.body.Username + ' already exists');
       } else {
-        Users.create({
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
-        })
-          .then((user) => {
-            res.status(201).json(user);
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
           })
+          .then((user) => { res.status(201).json(user) })
           .catch((error) => {
             console.error(error);
-            res.status(500).send("Error: " + error);
+            res.status(500).send('Error: ' + error);
           });
       }
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).send('Error: ' + error);
     });
 });
 
@@ -98,6 +101,7 @@ app.post(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
+    let hashedPassword = Users.hashPassword(req.body.Password);
     await Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
