@@ -16,6 +16,8 @@ mongoose.connect( process.env.CONNECTION_URI, {
   useUnifiedTopology: true,
 });
 
+// mongodb+srv://solzurch:Gueisman@myfirstdb.5zsxged.mongodb.net/myFirstDB?retryWrites=true&w=majority&appName=myFirstDB
+
 const app = express();
 
 app.use(bodyParser.json());
