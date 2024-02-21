@@ -37,6 +37,8 @@ let auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
 
+const { check, validationResult } = require('express-validator');
+
 // CREATE
 app.post('/users',[
     check('Username', 'Username is required').isLength({min: 5}),
