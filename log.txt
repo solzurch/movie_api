@@ -176,3 +176,4 @@ Timestamp: Thu Feb 01 2024 13:16:45 GMT+0100 (GMT+01:00)
 ::1 - - [21/Feb/2024:11:59:24 +0000] "POST /Users HTTP/1.1" 201 179 "-" "PostmanRuntime/7.36.3"
 ::1 - - [21/Feb/2024:12:07:26 +0000] "POST /Users HTTP/1.1" 400 19 "-" "PostmanRuntime/7.36.3"
 ::1 - - [21/Feb/2024:12:07:44 +0000] "POST /Users HTTP/1.1" 400 19 "-" "PostmanRuntime/7.36.3"
+::1 - - [21/Feb/2024:12:13:05 +0000] "POST /login?Username=Sol3&Password=Lameiro3 HTTP/1.1" 200 582 "-" "PostmanRuntime/7.36.3"
