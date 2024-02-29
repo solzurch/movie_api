@@ -30,24 +30,29 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
 // setup the logger
 app.use(morgan("combined", { stream: accessLogStream }));
 
-const cors = require('cors');
+const cors = require("cors");
 app.use(cors());
 
 let auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
 
-const { check, validationResult } = require('express-validator');
+const { check, validationResult } = require("express-validator");
 
 // CREATE
-app.post('/users',[
-    check('Username', 'Username is required').isLength({min: 5}),
-    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
-  ], async (req, res) => {
-
-  // check the validation object for errors
+app.post(
+  "/users",
+  [
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Password", "Password is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid").isEmail(),
+  ],
+  async (req, res) => {
+    // check the validation object for errors
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
@@ -58,64 +63,76 @@ app.post('/users',[
       .then((user) => {
         if (user) {
           //If the user is found, send a response that it already exists
-          return res.status(400).send(req.body.Username + ' already exists');
+          return res.status(400).send(req.body.Username + " already exists");
         } else {
-          Users
-            .create({
-              Username: req.body.Username,
-              Password: hashedPassword,
-              Email: req.body.Email,
-              Birthday: req.body.Birthday
+          Users.create({
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          })
+            .then((user) => {
+              res.status(201).json(user);
             })
-            .then((user) => { res.status(201).json(user) })
             .catch((error) => {
               console.error(error);
-              res.status(500).send('Error: ' + error);
+              res.status(500).send("Error: " + error);
             });
         }
       })
       .catch((error) => {
         console.error(error);
-        res.status(500).send('Error: ' + error);
+        res.status(500).send("Error: " + error);
       });
-  });
+  }
+);
 
 // UPDATE a user's info, by username
-app.put('/users/:Username', [
-  check('Username', 'Username is required').notEmpty(),
-  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-  check('Password', 'Password is required').notEmpty(),
-  check('Email', 'Email does not appear to be valid').isEmail()
-], passport.authenticate ('jwt', {session: false}), async (req, res) => {
-
-  //check validation object for errors
-  let errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({errors: errors.array()});
-  }
-
-  //Condition to check that username in request matches username in request params
-  if(req.user.Username !== req.params.Username) {
-    return res.status(400).send('Permission denied.');
-  }
-  //Condition ends, finds user and updates their info
-  await Users.findOneAndUpdate({Username: req.params.Username}, {$set:
-    {
-      Username: req.body.Username,
-      Password: req.body.Password,
-      Email: req.body.Email,
-      Birthday: req.body.Birthday
+app.put(
+  "/users/:Username",
+  [
+    check("Username", "Username is required").notEmpty(),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Password", "Password is required").notEmpty(),
+    check("Email", "Email does not appear to be valid").isEmail(),
+  ],
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    //check validation object for errors
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
     }
-  },
-  {new: true}) //This line makes sure that the updated document is returned
-  .then((updatedUser) => {
-    res.json(updatedUser);
-  })
-  .catch((err) => {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
-  })
-});
+
+    //Condition to check that username in request matches username in request params
+    if (req.user.Username !== req.params.Username) {
+      return res.status(400).send("Permission denied.");
+    }
+    //Condition ends, finds user and updates their info
+    await Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      {
+        $set: {
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        },
+      },
+      { new: true }
+    ) //This line makes sure that the updated document is returned
+      .then((updatedUser) => {
+        res.json(updatedUser);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
 // ADD MOVIE TO USER'S FAVORITES
 app.post(
@@ -222,7 +239,7 @@ app.get(
 // READ  Get ALL movies
 app.get(
   "/movies",
-  passport.authenticate("jwt", { session: false }),
+
   async (req, res) => {
     await Movies.find()
       .then((movies) => {
@@ -256,7 +273,7 @@ app.get(
   "/movies/genre/:genre",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    await Movies.findOne({ 'Genre.Name': req.params.genre })
+    await Movies.findOne({ "Genre.Name": req.params.genre })
       .then((movie) => {
         res.json(movie);
       })
@@ -272,7 +289,7 @@ app.get(
   "/movies/director/:directorName",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    await Movies.findOne({ 'Director.Name': req.params.directorName })
+    await Movies.findOne({ "Director.Name": req.params.directorName })
       .then((movie) => {
         if (!movie) {
           res.status(400).send(req.params.directorName + " was not found.");
@@ -294,7 +311,6 @@ app.use((err, req, res, next) => {
 
 // listen for requests
 const port = process.env.PORT || 5001;
-app.listen(port,  () => {
+app.listen(port, () => {
   console.log("Listening on port " + port);
 });
-
