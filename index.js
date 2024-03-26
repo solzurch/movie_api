@@ -139,43 +139,47 @@ app.post(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let hashedPassword = Users.hashPassword(req.body.Password);
-    await Users.findOneAndUpdate(
-      { Username: req.params.Username },
-      {
-        $push: { FavoriteMovies: req.params.MovieID },
-      },
-      { new: true }
-    ) // This line makes sure that the updated document is returned
-      .then((updatedUser) => {
-        res.json(updatedUser);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send("Error: " + err);
-      });
+    try {
+      const updatedUser = await Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        {
+          $push: { FavoriteMovies: req.params.MovieID },
+        },
+        { new: true }
+      );
+      if (!updatedUser) {
+        res.status(400).send("Could not add favorite movie");
+      }
+      res.json(updatedUser);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    }
   }
 );
 
 // DELETE MOVIE FROM USER'S FAVORITES
 app.delete(
-  "/users/:Username/movies/:movieId",
+  "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    await Users.findOneAndUpdate(
-      { UserName: req.params.Username },
-      {
-        $pull: { FavoriteMovies: req.params.movieId },
-      },
-      { new: true }
-    )
-      .then((updatedUser) => {
-        res.json(updatedUser);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send("Error: " + err);
-      });
+    try {
+      const updatedUser = await Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        {
+          $pull: { FavoriteMovies: req.params.MovieID },
+        },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        res.status(400).send("Could not remove favorite movie");
+      }
+      res.json(updatedUser);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    }
   }
 );
 
